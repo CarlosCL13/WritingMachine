@@ -1,0 +1,62 @@
+QMainWindow 
+{
+    background-color: #2b2b2b;
+}
+
+QPlainTextEdit 
+{
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    font-family: Consolas;
+    font-size: 14px;
+    border: none;
+    padding: 10px;
+}
+
+QPushButton 
+{
+    background-color: #007acc;
+    color: #ffffff;
+    border: 1px solid #007acc;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+QPushButton:hover 
+{
+    background-color: #005f99;
+    border: 1px solid #005f99;
+}
+
+QMenuBar 
+{
+    background-color: #2b2b2b;
+    color: #ffffff;
+}
+
+QMenuBar::item 
+{
+    background-color: #333333;
+    color: #ffffff;
+}
+
+QMenuBar::item::selected 
+{
+    background-color: #505050;
+}
+
+QMenu 
+{
+    background-color: #333333;
+    color: #ffffff;
+}
+
+QMenu::item::selected 
+{
+    background-color: #505050;
+}
+
+QMessageBox {
+    background-color: #2b2b2b;
+    color: #d4d4d4;
+}
