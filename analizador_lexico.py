@@ -3,27 +3,21 @@ import ply.lex as lex
 # Definicion de Tokens
 
 tokens = [
-    'COMA', 'PUNTOCOMA', 'DOSPUNTOS', 'ASIGNACION', 
-    'PARENTESIS_IZQ', 'PARENTESIS_DER', 'PARENTESISC_IZQ', 'PARENTESISC_DER',
-    'ID', 'NUMERO', 'DIFERENTE',
-    'MAYOR', 'MENOR', 'MAYORIGUAL', 'MENORIGUAL',
-    'SUMA',  'RESTA', 'MULTIPLICA', 'DIVIDE', 'POTENCIA'    
+    'COMA', 'PUNTOCOMA', 'PARENTESIS_IZQ', 'PARENTESIS_DER', 
+    'PARENTESISC_IZQ', 'PARENTESISC_DER', 'ID', 'NUMERO', 'BOOL'    
 ]
 
 # Definicion de palabras reservadas
                 
 reservadas = {
-    'Def':'DEF', 'Put':'PUT' , 'Start':'START', 
-    'Add':'ADD', 'If':'IF', 'while':'WHILE',
-    'IfElse':'IFELSE', 'EndIf':'ENDIF', 'Repeat':'REPEAT', 
-    'Until':'UNTIL', 'And':'AND','Or':'OR', 
-    'Print':'PRINT', 'End':'END', 'Random':'RANDOM',
-    'PosX':'POSX', 'PosY':'POSY','Pos':'POS',
-    'Equal':'EQUAL', 'Greater':'GREATER', 'Smaller':'SMALLER',
-    'Substr':'SUBSTR', 'Mult':'MULT', 'Div':'DIV',
-    'Sum':'SUM', 'Else':'ELSE', 'For':'FOR', 
-    'Loop':'LOOP', 'Case':'CASE', 'When':'WHEN', 
-    'Then':'THEN', 'Whend':'WHEND'
+    'Def':'DEF', 'Put':'PUT' , 'Proc':'PROC', 
+    'Add':'ADD','while':'WHILE','Repeat':'REPEAT', 
+    'Until':'UNTIL', 'And':'AND','Or':'OR',
+    'End':'END', 'Random':'RANDOM','PosX':'POSX',
+    'PosY':'POSY','Pos':'POS','Equal':'EQUAL', 'Greater':'GREATER', 
+    'Smaller':'SMALLER','Substr':'SUBSTR', 'Mult':'MULT', 'Div':'DIV',
+    'Sum':'SUM', 'Else':'ELSE', 'For':'FOR', 'Loop':'LOOP', 
+    'Case':'CASE', 'When':'WHEN', 'Then':'THEN', 'Whend':'WHEND'
 }
 
 
@@ -45,51 +39,30 @@ t_ignore = '  \t'
 
 t_COMA = r','
 t_PUNTOCOMA = r';'
-t_DOSPUNTOS = r':'
-t_ASIGNACION = r'='
 t_PARENTESIS_IZQ = r'\('
 t_PARENTESIS_DER = r'\)'
 t_PARENTESISC_IZQ = r'\['
 t_PARENTESISC_DER = r'\]'
-t_DIFERENTE = r'!='
-t_MAYOR = r'>'
-t_MENOR = r'<'
-t_MAYORIGUAL = r'>='
-t_MENORIGUAL = r'<='
-t_SUMA = r'\+'
-t_RESTA = r'\-'
-t_MULTIPLICA = r'\*'
-t_DIVIDE = r'\/'
-t_POTENCIA = r'\^'
 
 # Funciones
 
-def t_START(t):
-    r'\--.*'
-    t.value = "START"
-    t.type = t.value
-    return t
-
-
-def t_FIN(t):
-    r'Fin'
-    t.value = "FIN"
-    t.type = t.value
-    return t
-
-
-
-def t_ENDIF(t):
-    r'EndIf'
-    t.value = "ENDIF"
-    t.type = t.value
+def t_BOOL(t):
+    r'TRUE|FALSE'
+    try:
+       t.value = t.value
+       """  if t.value == "TRUE":
+            t.value = t.value
+        else:
+            t.value = t.value """
+    except ValueError:
+        print("No es tipo booleano")
     return t
 
 
 def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z0-9_#&@]*'
-    if t.value.upper() in reservadas.values():
-        t.value = t.value.upper()
+    r'[a-zA-Z_][a-zA-Z0-9_#&@]{2,9}'
+    if t.value in reservadas.values():
+        t.value = t.value
         t.type = t.value
     return t
 
@@ -106,7 +79,7 @@ def t_NUMERO(t):
 
 
 def t_error(t):
-    print("Caracter ilegal '%s'" % t.value[0])
+    print("Expresion regular invalida '%s'" % t.value[0])
     t.lexer.skip(1)
 
 
@@ -119,7 +92,7 @@ def t_COMMENT(t):
 lexer = lex.lex()
 
 #Ejemplo de uso
-data = "Add (4,5) While (3>1) abc = 2 Random()"
+data = "PROC ADD (4,5) WHILE (GREATER(3,1)) DEF(rata,TRUE) RANDOM() END;"
 
 lexer.input(data)
 
