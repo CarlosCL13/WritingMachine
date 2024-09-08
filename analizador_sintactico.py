@@ -22,8 +22,6 @@ def p_set_proc(p):
         #p[0] = [p[1]]
     pass
 
-#Nuestras
-
 def p_procedimiento(p):
     """procedimiento : funcion procimiento
                     | empty"""
@@ -221,7 +219,7 @@ def p_while(p):
     pass
 
 def p_for(p):
-    """for : FOR ID PARENTESIS_IZQ NUMBER to NUMBER PARENTESIS_DER LOOP PARENTESISC_IZQ expression PARENTESISC_DER END LOOP PUNTOCOMA"""
+    """for : FOR ID PARENTESIS_IZQ NUMERO to NUMERO PARENTESIS_DER LOOP PARENTESISC_IZQ expression PARENTESISC_DER END LOOP PUNTOCOMA"""
     #p[0] = While(p[3], p[6])
     pass
 
@@ -235,8 +233,8 @@ def p_case(p):
             | CASE ID when else END CASE PUNTOCOMA"""
 
 def p_when(p):
-    """when : WHEN NUMBER THEN PARENTESISC_IZQ expresion PARENTESISC_DER
-            | WHEN NUMBER THEN PARENTESISC_IZQ expresion PARENTESISC_DER 
+    """when : WHEN NUMERO THEN PARENTESISC_IZQ expresion PARENTESISC_DER
+            | WHEN NUMERO THEN PARENTESISC_IZQ expresion PARENTESISC_DER 
             | WHEN BOOL THEN PARENTESISC_IZQ expresion PARENTESISC_DER
             | WHEN BOOL THEN PARENTESISC_IZQ expresion PARENTESISC_DER"""
     #p[0] = If(p[2], p[4])
@@ -253,6 +251,6 @@ def p_empty(p):
 
 def p_error( p):
     if p:
-        self.errors.append(f'Syntax error in line {p.lineno} in {p.value} token')
+        print('Syntax error in line {p.lineno} in {p.value} token')
     else:
-        self.errors.append("Syntax error: Invalid EOF\nMissing token at the end of a procedure")
+        print("Syntax error: Invalid EOF\nMissing token at the end of a procedure")
