@@ -17,7 +17,7 @@ reservadas = {
     'PosY':'POSY','Pos':'POS','Equal':'EQUAL', 'Greater':'GREATER', 
     'Smaller':'SMALLER','Substr':'SUBSTR', 'Mult':'MULT', 'Div':'DIV',
     'Sum':'SUM', 'Else':'ELSE', 'For':'FOR', 'Loop':'LOOP', 
-    'Case':'CASE', 'When':'WHEN', 'Then':'THEN', 'Whend':'WHEND'
+    'Case':'CASE', 'When':'WHEN', 'Then':'THEN', 'Whend':'WHEND', 'To':'to'
 }
 
 
@@ -33,7 +33,7 @@ reservadas.update(movimientos)
 
 tokens = list(reservadas.values()) + tokens
 
-t_ignore = '  \t'
+t_ignore = ' \t'
 
 # Asignacion de caracteres
 
@@ -60,7 +60,7 @@ def t_BOOL(t):
 
 
 def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z0-9_#&@]{2,9}'
+    r'[a-zA-Z_][a-zA-Z0-9_#&@]{2,9}|to'
     if t.value in reservadas.values():
         t.value = t.value
         t.type = t.value
@@ -92,7 +92,7 @@ def t_COMMENT(t):
 lexer = lex.lex()
 
 #Ejemplo de uso
-data = "PROC ADD (4,5) WHILE (GREATER(3,1)) DEF(rata,TRUE) RANDOM() END;"
+data = "PROC ADD (4,5) WHILE (GREATER(3,1)) DEF(rata,TRUE) RANDOM() END; to"
 
 lexer.input(data)
 
