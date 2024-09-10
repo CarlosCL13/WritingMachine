@@ -45,6 +45,8 @@ def p_expresion(p):
                     | logicas expresion
                     | movimiento expresion
                     | condicionales expresion
+                    | for expresion
+                    | while expresion
                     | empty"""
     #p[0] = p[1]
     pass
@@ -111,9 +113,9 @@ def p_funcion(p):
     #p[0] = Function(p[2], p[4], p[6])
     pass
 
+#| ADD PARENTESIS_IZQ ID PARENTESIS_DER PUNTOCOMA
 def p_aritmeticas(p):
     """aritmeticas : ADD PARENTESIS_IZQ ID COMA expresion_op PARENTESIS_DER PUNTOCOMA
-                    | ADD PARENTESIS_IZQ ID PARENTESIS_DER PUNTOCOMA
                     | DIV PARENTESIS_IZQ expresion_op COMA expresion_op PARENTESIS_DER PUNTOCOMA
                     | MULT PARENTESIS_IZQ expresion_op COMA expresion_op PARENTESIS_DER PUNTOCOMA
                     | SUM PARENTESIS_IZQ expresion_op COMA expresion PARENTESIS_DER PUNTOCOMA
@@ -189,24 +191,24 @@ def p_pos( p):
     #p[0] = Pos(p[3], p[5])
     pass
 
-def p_posAxis( p):
+def p_posAxis(p):
     """posAxis : POSX expresion_op PUNTOCOMA
             | POSY expresion_op PUNTOCOMA"""
     #p[0] = PosAxis(p[1], p[2])
     pass
 
-def p_useColor( p):
+def p_useColor(p):
     """useColor : USECOLOR expresion_op PUNTOCOMA"""
     #p[0] = UseColor(p[2])
     pass
 
-def p_elevation( p):
+def p_elevation(p):
     """elevation : UP PUNTOCOMA
                     | DOWN PUNTOCOMA"""
     #p[0] = Elevation(p[1])
     pass
 
-def p_beginning( p):
+def p_beginning(p):
     """beginning : BEGINNING PUNTOCOMA"""
     #p[0] = Begin()
     pass
@@ -230,7 +232,7 @@ def p_while(p):
     pass
 
 def p_for(p):
-    """for : FOR ID PARENTESIS_IZQ NUMERO to NUMERO PARENTESIS_DER LOOP PARENTESISC_IZQ expresion PARENTESISC_DER END LOOP PUNTOCOMA"""
+    """for : FOR ID PARENTESIS_IZQ NUMERO TO NUMERO PARENTESIS_DER LOOP PARENTESISC_IZQ expresion PARENTESISC_DER END LOOP PUNTOCOMA"""
     #p[0] = While(p[3], p[6])
     pass
 
@@ -264,6 +266,30 @@ def p_error( p):
     else:
         print("Syntax error: Invalid EOF\nMissing token at the end of a procedure")
 
+#parser = yacc.yacc()
+#cadena = "PROC linea1() \n [Def(varLocal1, 1); \n POSY varLocal1;]; \n END;"
+#result = parser.parse(cadena)
+
+# Coloca tu código del parser aquí (omitido para simplificar)
+
+# Función para leer el contenido de un archivo de texto y parsearlo
+def leer_y_parsear_archivo(nombre_archivo):
+    try:
+        with open(nombre_archivo, 'r') as archivo:
+            cadena = archivo.read()  # Leer todo el contenido del archivo
+        result = parser.parse(cadena)  # Parsear el contenido del archivo
+        return result
+    except FileNotFoundError:
+        print(f"Error: No se pudo encontrar el archivo '{nombre_archivo}'.")
+
+# Crear el parser
 parser = yacc.yacc()
-cadena = "PROC linea1() \n [Def(varLocal1, 1); \n POSY varLocal1;]; \n END;"
-result = parser.parse(cadena)
+
+# Nombre del archivo de texto que contiene el código a parsear
+nombre_archivo = "codigo.txt"
+
+# Llamar a la función para leer el archivo y parsearlo
+resultado = leer_y_parsear_archivo(nombre_archivo)
+
+# Si quieres ver el resultado del parseo
+#print(resultado)

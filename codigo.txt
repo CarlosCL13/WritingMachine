@@ -1,0 +1,67 @@
+// Programa ejemplo del Proyecto de Compiladores e Intérpretes 2024
+
+PROC linea1()
+[
+    // DEFine variable local
+    DEF(varLocal1, 1);
+    POSY varLocal1;
+];
+END;
+
+PROC posiciona(valorX, valorY)
+[
+    DEF(PosX, valorX);
+    DEF(PosY, valorY);
+];
+END;
+
+PROC impCruz(x, y)
+[
+    DOWN;
+    POS(x, y);
+    
+    FOR var1(1 TO 11) LOOP
+    [
+        POSY ADD(var2, var1);;
+
+        CONTINUELEFT 9;
+    ]
+    END LOOP;
+
+    UP;
+
+    POSX SUBSTR(x, 6);;
+    POSY SUBSTR(y, 5);;
+    
+    DOWN;
+
+    FOR var1(1 TO 5) LOOP
+    [
+        POSY ADD(var2, var1);;
+        CONTINUERIGHT 9;
+    ]
+    END LOOP;
+
+    UP;
+    BEGINNING;
+];
+END;
+
+PROC Main()
+[
+    // DEFine variable global
+    DEF(varGlobal1, 1);
+    
+    // Llama al PROCedimiento linea1
+    linea1();
+    
+    // Llama al PROCedimiento posiciona
+    posiciona(1, 1);
+    
+    // El color es 1
+    USECOLOR varGlobal1;
+    
+    // Llama al PROCedimiento para dibujar una Cruz
+    impCruz(5, 5);
+];
+END;

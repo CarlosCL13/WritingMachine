@@ -17,7 +17,7 @@ reservadas = {
     'PosY':'POSY','Pos':'POS','Equal':'EQUAL', 'Greater':'GREATER', 
     'Smaller':'SMALLER','Substr':'SUBSTR', 'Mult':'MULT', 'Div':'DIV',
     'Sum':'SUM', 'Else':'ELSE', 'For':'FOR', 'Loop':'LOOP', 
-    'Case':'CASE', 'When':'WHEN', 'Then':'THEN', 'Whend':'WHEND', 'To':'to'
+    'Case':'CASE', 'When':'WHEN', 'Then':'THEN', 'Whend':'WHEND', 'To':'TO'
 }
 
 
@@ -60,7 +60,7 @@ def t_BOOL(t):
 
 
 def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z0-9_#&@]{2,9}|to'
+    r'CONTINUELEFT|CONTINUERIGHT|CONTINUEDOWN|TO|OR|UP|[a-zA-Z_][a-zA-Z0-9_#&@]{2,9}'
     if t.value in reservadas.values():
         t.value = t.value
         t.type = t.value
@@ -92,7 +92,7 @@ def t_COMMENT(t):
 lexer = lex.lex()
 
 #Ejemplo de uso
-data = "PROC ADD (4,5) WHILE (GREATER(3,1)) DEF(rata,TRUE) RANDOM() END; to"
+data = "PROC ADD (4,5) WHILE (GREATER(3,1)) DEF(rata,TRUE) RANDOM() END;"
 
 lexer.input(data)
 
