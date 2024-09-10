@@ -1,6 +1,10 @@
 import ply.yacc as yacc
 from analizador_lexico import tokens
 
+precedence = (
+	('right','PROC'),
+	)
+
 # Ejemplo que no sabemos como funca: DEF(rata, MULT(MULT(9,1), MULT(8,9)))
 
 def p_programa(p):
@@ -14,8 +18,8 @@ def p_proc_compuesto(p):
     pass
 
 def p_set_proc(p):
-    """set_proc : procedure set_proc
-                | procedure"""
+    """set_proc : procedimiento set_proc
+                | procedimiento"""
     #try:
         #p[0] = [p[1]] + p[2]
     #except IndexError:
@@ -23,13 +27,14 @@ def p_set_proc(p):
     pass
 
 def p_procedimiento(p):
-    """procedimiento : funcion procimiento
-                    | empty"""
+    """procedimiento : funcion"""
     #p[0] = p[1]
     pass
 
-def p_blob_ejecucion(p):
-    """bloq_ejecucion: while"""
+
+def p_bloq_ejecucion(p):
+    """bloq_ejecucion : while"""
+    pass
 
 
 def p_expresion(p):
@@ -44,6 +49,7 @@ def p_expresion(p):
     #p[0] = p[1]
     pass
 
+
 def p_expresion_var(p):
     """expresion_var : ID
                     | NUMERO
@@ -52,7 +58,7 @@ def p_expresion_var(p):
     #p[0] = p[1]
     pass
 
-def expresion_param(p):
+def p_expresion_param(p):
     """expresion_param : ID
                     | NUMERO
                     | BOOL
@@ -62,7 +68,7 @@ def expresion_param(p):
     #p[0] = p[1]
     pass
 
-def expresion_op(p):
+def p_expresion_op(p):
     """expresion_op : ID
                     | NUMERO
                     | aritmeticas
@@ -70,7 +76,7 @@ def expresion_op(p):
     #p[0] = p[1]
     pass
 
-def expresion_log(p):
+def p_expresion_log(p):
     """expresion_log : ID
                     | NUMERO
                     | condicionales
@@ -82,7 +88,7 @@ def expresion_cond(p):
     """expresion_cond: """
 
 def p_def_variable(p):
-    """def_variable : DEF PARENTESIS_IZQ ID expresion_var PARENTESIS_DER PUNTOCOMA"""
+    """def_variable : DEF PARENTESIS_IZQ ID COMA expresion_var PARENTESIS_DER PUNTOCOMA"""
     #p[0] = VariableDef(p[2], p[4])
     pass
 
@@ -100,12 +106,17 @@ def p_parametros(p):
         #p[0] = [p[1]]
     pass
 
+def p_funcion(p):
+    """funcion : PROC ID PARENTESIS_IZQ parametros PARENTESIS_DER PARENTESISC_IZQ expresion PARENTESISC_DER PUNTOCOMA END PUNTOCOMA"""
+    #p[0] = Function(p[2], p[4], p[6])
+    pass
+
 def p_aritmeticas(p):
     """aritmeticas : ADD PARENTESIS_IZQ ID COMA expresion_op PARENTESIS_DER PUNTOCOMA
                     | ADD PARENTESIS_IZQ ID PARENTESIS_DER PUNTOCOMA
                     | DIV PARENTESIS_IZQ expresion_op COMA expresion_op PARENTESIS_DER PUNTOCOMA
                     | MULT PARENTESIS_IZQ expresion_op COMA expresion_op PARENTESIS_DER PUNTOCOMA
-                    | SUM PARENTESIS_IZQ expresion_op COMA expression PARENTESIS_DER PUNTOCOMA
+                    | SUM PARENTESIS_IZQ expresion_op COMA expresion PARENTESIS_DER PUNTOCOMA
                     | SUBSTR PARENTESIS_IZQ expresion_op COMA expresion_op PARENTESIS_DER PUNTOCOMA
                     | random """
     # if p[1] == "Multiply":
@@ -142,33 +153,33 @@ def p_condicionales(p):
     pass
 
 def p_movimiento(p):
-    """movimiento: continueUp 
+    """movimiento : continueUp 
         | continueDown
         | continueRight
         | continueLeft
         | pos
         | posAxis
         | useColor
-        | p_elevation
+        | elevation
         | beginning"""
     pass
 
-def continueUp( p):
+def p_continueUp(p):
     """continueUp : CONTINUEUP expresion_op PUNTOCOMA"""
     #p[0] = Continue(p[1], p[2])
     pass
 
-def continueDown( p):
+def p_continueDown( p):
     """continueDown : CONTINUEDOWN expresion_op PUNTOCOMA"""
     #p[0] = Continue(p[1], p[2])
     pass
 
-def continueRight( p):
+def p_continueRight( p):
     """continueRight : CONTINUERIGHT expresion_op PUNTOCOMA"""
     #p[0] = Continue(p[1], p[2])
     pass
 
-def continueLeft( p):
+def p_continueLeft( p):
     """continueLeft : CONTINUELEFT expresion_op PUNTOCOMA"""
     #p[0] = Continue(p[1], p[2])
     pass
@@ -214,17 +225,17 @@ def p_random(p):
 # Intrucciones de ciclos o bloques de instrucciones
 
 def p_while(p):
-    """while : WHILE PARENTESISC_IZQ condicionales PARENTESISC_DER PARENTESISC_IZQ expression PARENTESISC_DER WHEND PUNTOCOMA"""
+    """while : WHILE PARENTESISC_IZQ condicionales PARENTESISC_DER PARENTESISC_IZQ expresion PARENTESISC_DER WHEND PUNTOCOMA"""
     #p[0] = While(p[3], p[6])
     pass
 
 def p_for(p):
-    """for : FOR ID PARENTESIS_IZQ NUMERO to NUMERO PARENTESIS_DER LOOP PARENTESISC_IZQ expression PARENTESISC_DER END LOOP PUNTOCOMA"""
+    """for : FOR ID PARENTESIS_IZQ NUMERO to NUMERO PARENTESIS_DER LOOP PARENTESISC_IZQ expresion PARENTESISC_DER END LOOP PUNTOCOMA"""
     #p[0] = While(p[3], p[6])
     pass
 
 def p_repeat(p):
-    """repeat : REPEAT PARENTESISC_IZQ expression PARENTESISC_DER UNTIL PARENTESISC_IZQ condicionales PARENTESISC_DER"""
+    """repeat : REPEAT PARENTESISC_IZQ expresion PARENTESISC_DER UNTIL PARENTESISC_IZQ condicionales PARENTESISC_DER"""
     #p[0] = Repeat(p[2], p[4])
     pass
 
@@ -233,9 +244,7 @@ def p_case(p):
             | CASE ID when else END CASE PUNTOCOMA"""
 
 def p_when(p):
-    """when : WHEN NUMERO THEN PARENTESISC_IZQ expresion PARENTESISC_DER
-            | WHEN NUMERO THEN PARENTESISC_IZQ expresion PARENTESISC_DER 
-            | WHEN BOOL THEN PARENTESISC_IZQ expresion PARENTESISC_DER
+    """when : WHEN NUMERO THEN PARENTESISC_IZQ expresion PARENTESISC_DER 
             | WHEN BOOL THEN PARENTESISC_IZQ expresion PARENTESISC_DER"""
     #p[0] = If(p[2], p[4])
     pass
@@ -251,6 +260,10 @@ def p_empty(p):
 
 def p_error( p):
     if p:
-        print('Syntax error in line {p.lineno} in {p.value} token')
+        print(f'Syntax error in line {p.lineno} in {p.value} token')
     else:
         print("Syntax error: Invalid EOF\nMissing token at the end of a procedure")
+
+parser = yacc.yacc()
+cadena = "PROC linea1() \n [Def(varLocal1, 1); \n POSY varLocal1;]; \n END;"
+result = parser.parse(cadena)
