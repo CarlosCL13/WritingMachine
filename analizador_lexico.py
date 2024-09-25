@@ -10,13 +10,13 @@ tokens = [
 # Definicion de palabras reservadas
                 
 reservadas = {
-    'Def':'DEF', 'Put':'PUT' , 'Proc':'PROC', 
-    'Add':'ADD','while':'WHILE','Repeat':'REPEAT', 
+    'Def':'DEF', 'Put':'PUT' , 'Proc':'PROC', 'Main':'MAIN',
+    'Add':'ADD','while':'WHILE','Repeat':'REPEAT',
     'Until':'UNTIL', 'And':'AND','Or':'OR',
     'End':'END', 'Random':'RANDOM','PosX':'POSX',
-    'PosY':'POSY','Pos':'POS','Equal':'EQUAL', 'Greater':'GREATER', 
+    'PosY':'POSY','Pos':'POS','Equal':'EQUAL', 'Greater':'GREATER',
     'Smaller':'SMALLER','Substr':'SUBSTR', 'Mult':'MULT', 'Div':'DIV',
-    'Sum':'SUM', 'Else':'ELSE', 'For':'FOR', 'Loop':'LOOP', 
+    'Sum':'SUM', 'Else':'ELSE', 'For':'FOR', 'Loop':'LOOP',
     'Case':'CASE', 'When':'WHEN', 'Then':'THEN', 'Whend':'WHEND', 'To':'TO'
 }
 
@@ -24,9 +24,9 @@ reservadas = {
 # Definicion de movimientos del hardware
                                                                                 
 movimientos = {'ContinueUp':'CONTINUEUP', 'ContinueDown':'CONTINUEDOWN', 
-               'ContinueLeft':'CONTINUELEFT', 'ContinueRight':'CONTINUERIGHT', 
-               'UseColor':'USECOLOR', 'Down':'DOWN','Up':'UP',
-               'Beginning':'BEGINNING'
+                'ContinueLeft':'CONTINUELEFT', 'ContinueRight':'CONTINUERIGHT', 
+                'UseColor':'USECOLOR', 'Down':'DOWN','Up':'UP',
+                'Beginning':'BEGINNING'
 }
 
 reservadas.update(movimientos)
@@ -49,8 +49,8 @@ t_PARENTESISC_DER = r'\]'
 def t_BOOL(t):
     r'TRUE|FALSE'
     try:
-       t.value = t.value
-       """  if t.value == "TRUE":
+        t.value = t.value
+        """  if t.value == "TRUE":
             t.value = t.value
         else:
             t.value = t.value """
@@ -60,10 +60,28 @@ def t_BOOL(t):
 
 
 def t_ID(t):
-    r'CONTINUELEFT|CONTINUERIGHT|CONTINUEDOWN|TO|OR|UP|[a-zA-Z_][a-zA-Z0-9_#&@]{2,9}'
+    r'CONTINUELEFT|CONTINUERIGHT|CONTINUEDOWN|TO|OR|UP|[a-zA-Z_][a-zA-Z0-9_@]*'
+
     if t.value in reservadas.values():
         t.value = t.value
-        t.type = t.value
+        t.type = t.value 
+
+    else:
+
+        if (t.value[0]>="A" and t.value[0]<="Z"):
+                print(f"Error: La variable '{t.value}' no inicia con minuscula.")
+                t_error(t)
+                return None
+
+        elif (3 <= len(t.value) <= 10):
+            t.value = t.value
+        
+        else:
+            
+            print(f"Error: The token '{t.value}' is of invalid length ({len(t.value)} characters).")
+            t_error(t) 
+            return None 
+    
     return t
 
 
@@ -88,17 +106,27 @@ def t_COMMENT(t):
     pass
     # No return value. Token discarded
 
-#Construcción del analizador léxico
-lexer = lex.lex()
+def analizador_lexico(cadena):
+    lexer = lex.lex()
+    lexer.input(cadena)
+    prints = []  # Lista para tokens y errores
+    while True:
+        tokens = lexer.token()
+        if not tokens:
+            break
+        print(tokens)
+        prints.append(tokens)  # Añadir token o error a la lista
+    return prints
 
-#Ejemplo de uso
-data = "PROC ADD (4,5) WHILE (GREATER(3,1)) DEF(rata,TRUE) RANDOM() END;"
 
-lexer.input(data)
+'''lexer = lex.lex()
 
-#Obtener los tokens reconocidos
+cadena = "PROC ADD (4,5) WHILE (GREATER(3,1)) DEF(var1,TRUE) RANDOM() END;"
+
+lexer.input(cadena)
+
 while True:
-    token = lexer.token()
-    if not token:
+    tokens = lexer.token()
+    if not tokens:
         break
-    print(token)
+    print(tokens)'''

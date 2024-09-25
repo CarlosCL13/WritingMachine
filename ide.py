@@ -5,6 +5,9 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QPlainTextEdit, QVBoxLayo
 from PyQt5.QtCore import Qt, QRect, QSize
 from PyQt5.QtGui import QPainter, QColor
 
+from analizador_lexico import analizador_lexico
+from analizador_sintactico import analizador_sintactico
+
 
 #                ______________________________ 
 #_______________/ Área para el número de línea 
@@ -116,7 +119,7 @@ class IDE(QMainWindow):
         # Crear el panel de salida
         self.output_panel = QPlainTextEdit()
         self.output_panel.setReadOnly(True)
-        self.output_panel.setPlaceholderText("Mensajes de compilación...")
+        self.output_panel.setPlaceholderText("...")
 
         # Crear el botón de compilar
         self.compile_button = QPushButton("Compilar")
@@ -126,11 +129,11 @@ class IDE(QMainWindow):
         self.compile_button.setStyleSheet("QPushButton:disabled { background-color: #444; color: #888; }")
 
         # Crear el botón para abrir la nueva ventana
-        self.tree_button = QPushButton("Árbol generado")
-        self.tree_button.setFixedSize(100, 25)
-        self.tree_button.clicked.connect(self.open_new_window)
-        self.tree_button.setEnabled(False)
-        self.tree_button.setStyleSheet("QPushButton:disabled { background-color: #444; color: #888; }")
+        self.run_button = QPushButton("Run code")
+        self.run_button.setFixedSize(100, 25)
+        self.run_button.clicked.connect(self.open_new_window)
+        self.run_button.setEnabled(False)
+        self.run_button.setStyleSheet("QPushButton:disabled { background-color: #444; color: #888; }")
 
         # Configurar la barra de menú
         menubar = self.menuBar()
@@ -159,7 +162,7 @@ class IDE(QMainWindow):
         menu_button_layout = QHBoxLayout()
         menu_button_layout.addWidget(menubar)  # Añadir la barra de menú al layout
         menu_button_layout.addStretch()  
-        menu_button_layout.addWidget(self.tree_button)  # Añadir el botón de nueva ventana
+        menu_button_layout.addWidget(self.run_button)  # Añadir el botón de nueva ventana
         menu_button_layout.addWidget(self.compile_button)  # Añadir el botón de compilar al layout
 
         main_layout.addLayout(menu_button_layout)  # Añadir el layout de menú y botón
@@ -192,7 +195,7 @@ class IDE(QMainWindow):
 
     def compile_code(self):
         self.output_panel.appendPlainText("Compilando el código...")
-        self.tree_button.setEnabled(True)  # Habilitar el botón de nueva ventana al compilar
+        self.run_button.setEnabled(True)  # Habilitar el botón de nueva ventana al compilar
 
 
     #       _________________________________
@@ -202,7 +205,7 @@ class IDE(QMainWindow):
         self.setWindowTitle("Writing Machine IDE - Nuevo Archivo")  # Actualizar el título
         self.current_file = None  # Reiniciar el archivo actual
         self.compile_button.setEnabled(False)  # Deshabilitar el botón de compilar
-        self.tree_button.setEnabled(False)  # Deshabilitar el botón de nueva ventana al crear un nuevo archivo
+        self.run_button.setEnabled(False)  # Deshabilitar el botón de nueva ventana al crear un nuevo archivo
 
 
     #       ___________________________
@@ -254,8 +257,14 @@ class IDE(QMainWindow):
     #       ____________________________
     #______/ Funcionalidad: Compilar... \______ 
     def compile_code(self):
-        self.output_panel.appendPlainText("Compilando el código...")
-        self.tree_button.setEnabled(True)
+        self.run_button.setEnabled(True)
+        cadena = self.editor.toPlainText()
+        self.output_panel.clear()
+        print(cadena)
+        if cadena != "":
+            lista = analizador_lexico(cadena)
+            analizador_sintactico(cadena)
+        #return lista
 
 
 def main():

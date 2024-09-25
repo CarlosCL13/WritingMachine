@@ -47,7 +47,7 @@ PROC impCruz(x, y)
 ];
 END;
 
-PROC Main()
+Main()
 [
     // DEFine variable global
     DEF(varGlobal1, 1);
