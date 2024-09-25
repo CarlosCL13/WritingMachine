@@ -114,6 +114,7 @@ class IDE(QMainWindow):
 
         # Crear el editor de código
         self.editor = CodeEditor()
+        self.editor.setVisible(False)
         self.editor.setPlaceholderText("Escribe tu código aquí...")
 
         # Crear el panel de salida
@@ -131,7 +132,7 @@ class IDE(QMainWindow):
         # Crear el botón para abrir la nueva ventana
         self.run_button = QPushButton("Run code")
         self.run_button.setFixedSize(100, 25)
-        self.run_button.clicked.connect(self.open_new_window)
+        self.run_button.clicked.connect(self.run_code)
         self.run_button.setEnabled(False)
         self.run_button.setStyleSheet("QPushButton:disabled { background-color: #444; color: #888; }")
 
@@ -181,32 +182,27 @@ class IDE(QMainWindow):
         self.current_file = None
         self.tree_window_opened = False
 
-    def open_new_window(self):
-        if not self.tree_window_opened:  # Solo abrir si no hay ventana abierta
+    def run_code(self):
+        self.output_panel.appendPlainText("Coming Soon...")
+        '''if not self.tree_window_opened:  # Solo abrir si no hay ventana abierta
             self.tree_window = NewWindow()
             self.tree_window.show()
             self.tree_window_opened = True  # Marcar la ventana como abierta
-            self.tree_window.closeEvent = self.close_new_window  # Asignar evento de cierre
+            self.tree_window.closeEvent = self.close_new_window  # Asignar evento de cierre'''
 
     def close_new_window(self, event):
         self.tree_window_opened = False  # Marcar la ventana como cerrada
         event.accept()
 
-
-    def compile_code(self):
-        self.output_panel.appendPlainText("Compilando el código...")
-        self.run_button.setEnabled(True)  # Habilitar el botón de nueva ventana al compilar
-
-
     #       _________________________________
     #______/ Funcionalidad: Nuevo archivo... \______ 
     def new_file(self):
+        self.editor.setVisible(True)
         self.editor.clear()  # Limpiar el editor
         self.setWindowTitle("Writing Machine IDE - Nuevo Archivo")  # Actualizar el título
         self.current_file = None  # Reiniciar el archivo actual
         self.compile_button.setEnabled(False)  # Deshabilitar el botón de compilar
         self.run_button.setEnabled(False)  # Deshabilitar el botón de nueva ventana al crear un nuevo archivo
-
 
     #       ___________________________
     #______/ Funcionalidad: Guardar... y Guardar como... \______ 
@@ -242,6 +238,7 @@ class IDE(QMainWindow):
     #       _________________________
     #______/ Funcionalidad: Abrir... \______ 
     def open_file(self):
+        self.editor.setVisible(True)
         options = QFileDialog.Options()
         file_name, _ = QFileDialog.getOpenFileName(self, "Abrir archivo", "", "Archivos de código (*.wmce);;Todos los archivos (*)", options=options)
 
