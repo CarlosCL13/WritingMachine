@@ -1,0 +1,69 @@
+// Programa ejemplo del Proyecto de Compiladores e Intérpretes 2024
+
+PROC inc_Var()
+[
+  
+    DEF(varLocal1, 8); 			// Error léxico de tamaño de la variable, genera error sintáctico al no encontrar un parametro previo cuando lo espera -> DEF(variableLocal1, 8); 
+    						
+    DEF(varLocal2, 1);			// Error léxico variable inciada con mayúscual, genera genera error sintáctico al no encontrar un parametro previo cuando lo espera -> DEF(VarLocal2, 1);
+
+    ADD(varLocal1);
+    ADD(varLocal2, SUM(1, varLocal1));
+
+    						
+    // SUM(1, varLocal1);			// Error sintáctico pues espera que SUM forme parte de un parámetro donde se tome el valor que retorna para ser utilizado -> SUM(1, varLocal1);
+    
+    posPutero(varLocal1, varLocal2);
+];
+END;
+
+
+PROC posPuntero(varX, varY)
+[
+    POS(varX, varY);
+    cuadro(varX, varY); 			// Error léxico debido al token '}' el cual no esta definido como parte de la gramatica 
+					// Error sintáctico debido a que se espera en la regla que se termine con un ')' y ';' -> cuadro(varX, varY}
+];
+END;
+
+
+PROC cuadro(varX, varY)
+[
+    DOWN;
+    CONTINUEDOWN varY;
+    CONTINUERIGHT varX;
+    CONTINUEUP varY;			// Error léxico debido a carácter especial inválido '#' -> CONTINUEUP var#;
+    CONTINUELEFT varX;
+    UP;
+
+    resetear(varX, varY);
+];
+END;
+
+
+PROC resetear(varX, varY)
+[
+    PUT(varX, 0);
+    PUT(varY, 0);
+    POSX varX; 				// Error léxico pues PosX no es una palabra reservada e induce a un error sintáctico debido a la estructuración -> PosX varX;
+    POSY varY;
+];
+END;
+
+
+MAIN()
+[
+    DEF(varGlobal1, 1);
+    inc_Var();
+    USECOLOR varGlobal1;
+];
+END;
+
+
+// MAIN() // Error sintáctico pues no se indentifica el MAIN
+// [
+//     DEF(varGlobal1, 1);
+//     inc_Var();
+//     USECOLOR varGlobal1;
+// ];
+// END;

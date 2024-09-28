@@ -1,5 +1,10 @@
 import ply.lex as lex
 
+errores_lexicos = []  # Lista global para almacenar errores léxicos Main
+error_inicial = False
+error_len = False
+
+
 # Definicion de Tokens
 
 tokens = [
@@ -65,23 +70,21 @@ def t_ID(t):
     if t.value in reservadas.values():
         t.value = t.value
         t.type = t.value 
-
     else:
+        global error_inicial, error_len
 
         if (t.value[0]>="A" and t.value[0]<="Z"):
-                print(f"Error: La variable '{t.value}' no inicia con minuscula.")
-                t_error(t)
-                return None
-
+                error_inicial = True
+                error = t_error(t)
+                return error
+        
         elif (3 <= len(t.value) <= 10):
             t.value = t.value
-        
-        else:
             
-            print(f"Error: The token '{t.value}' is of invalid length ({len(t.value)} characters).")
-            t_error(t) 
-            return None 
-    
+        else:
+            error_len = True
+            error = t_error(t) 
+            return error
     return t
 
 
@@ -97,26 +100,48 @@ def t_NUMERO(t):
 
 
 def t_error(t):
-    print("Expresion regular invalida '%s'" % t.value[0])
+    global errores_lexicos
+    global error_inicial, error_len
+
+    if (error_inicial == True):
+        if (error_len == True):
+            error_msg = f"En línea: {t.lineno} --> El token '{t.value}' no cumple con el número de caracteres requerido. Posee ({len(t.value)}) carácteres y debería de ser de 3 a 10 carácteres."
+        else:
+            error_msg = f"En línea: {t.lineno} --> El token '{t.value}' no inicia con minúscula."
+    
+    elif (error_len == True):
+        error_msg = f"En línea: {t.lineno} --> El token '{t.value}' no cumple con el número de caracteres requerido. Posee ({len(t.value)}) carácteres y debería de ser de 3 a 10 carácteres."
+
+    else:
+        error_msg = f"En línea: {t.lineno} --> Expresión regular inválida '{t.value[0]}'"
+
+    error_inicial = False
+    error_len = False
+
+    errores_lexicos.append(error_msg) 
     t.lexer.skip(1)
+
+    return None
 
 
 def t_COMMENT(t):
     r'\//.*'
     pass
-    # No return value. Token discarded
+
 
 def analizador_lexico(cadena):
+    global errores_lexicos
+    errores_lexicos = []
     lexer = lex.lex()
     lexer.input(cadena)
-    prints = []  # Lista para tokens y errores
+    tokens_y_errores = []
     while True:
-        tokens = lexer.token()
-        if not tokens:
+        token = lexer.token()
+        if not token:
             break
-        print(tokens)
-        prints.append(tokens)  # Añadir token o error a la lista
-    return prints
+        tokens_y_errores.append(token)
+    tokens_y_errores.extend(errores_lexicos)
+    return tokens_y_errores
 
 
 '''lexer = lex.lex()

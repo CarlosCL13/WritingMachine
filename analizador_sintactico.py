@@ -1,6 +1,8 @@
 import ply.yacc as yacc
 from analizador_lexico import tokens
 
+errores_sintacticos = []  # Lista global para almacenar errores sintácticos
+
 precedence = (
 	('right','PROC'),
     ('left','MAIN'),
@@ -210,16 +212,24 @@ def p_empty(p):
     """empty :"""
     pass
 
-def p_error( p):
+def p_error(p):
+    global errores_sintacticos
     if p:
-        print(f'Syntax error in line {p.lineno} in {p.value} token')
+        error_msg = f"En línea: {p.lineno} --> Error sintáctico en el token {p.value}"
     else:
-        print("Syntax error: Invalid EOF\nMissing token at the end of a procedure")
+        error_msg = "Error de sintaxis: EOF no válido. Falta un token al final de un procedimiento"
+    
+    errores_sintacticos.append(error_msg) 
 
 
 def analizador_sintactico(cadena):
+    global errores_sintacticos
+    errores_sintacticos = [] 
     parser = yacc.yacc()
     parser.parse(cadena)
+    
+    return errores_sintacticos
+
 
 
 # Función para leer el contenido de un archivo de texto y parsearlo

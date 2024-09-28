@@ -41,7 +41,7 @@ class CodeEditor(QPlainTextEdit):
 
 
     def lineNumberAreaWidth(self):
-        fixed_width = 30  # Ancho fijo del aréa de numero de línea
+        fixed_width = 30 
         return fixed_width
 
 
@@ -104,39 +104,32 @@ class IDE(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # Configurar la ventana principal
         self.setWindowTitle("Writing Machine IDE")
         self.setGeometry(100, 100, 800, 600)
 
-        # Cargar el archivo de estilo
         with open("style.qss", "r") as file:
             self.setStyleSheet(file.read())
 
-        # Crear el editor de código
         self.editor = CodeEditor()
         self.editor.setVisible(False)
         self.editor.setPlaceholderText("Escribe tu código aquí...")
 
-        # Crear el panel de salida
         self.output_panel = QPlainTextEdit()
         self.output_panel.setReadOnly(True)
         self.output_panel.setPlaceholderText("...")
 
-        # Crear el botón de compilar
         self.compile_button = QPushButton("Compilar")
         self.compile_button.clicked.connect(self.compile_code)
         self.compile_button.setFixedSize(100, 25)
         self.compile_button.setEnabled(False)
         self.compile_button.setStyleSheet("QPushButton:disabled { background-color: #444; color: #888; }")
 
-        # Crear el botón para abrir la nueva ventana
         self.run_button = QPushButton("Run code")
         self.run_button.setFixedSize(100, 25)
         self.run_button.clicked.connect(self.run_code)
         self.run_button.setEnabled(False)
         self.run_button.setStyleSheet("QPushButton:disabled { background-color: #444; color: #888; }")
 
-        # Configurar la barra de menú
         menubar = self.menuBar()
         file_menu = menubar.addMenu("Archivo")
 
@@ -156,19 +149,16 @@ class IDE(QMainWindow):
         close_action.triggered.connect(self.close)
         file_menu.addAction(close_action)
 
-        # Crear el layout principal
         main_layout = QVBoxLayout()
 
-        # Crear un layout horizontal para el menú y los botones
         menu_button_layout = QHBoxLayout()
-        menu_button_layout.addWidget(menubar)  # Añadir la barra de menú al layout
+        menu_button_layout.addWidget(menubar)
         menu_button_layout.addStretch()  
-        menu_button_layout.addWidget(self.run_button)  # Añadir el botón de nueva ventana
-        menu_button_layout.addWidget(self.compile_button)  # Añadir el botón de compilar al layout
+        menu_button_layout.addWidget(self.run_button)
+        menu_button_layout.addWidget(self.compile_button)
 
-        main_layout.addLayout(menu_button_layout)  # Añadir el layout de menú y botón
+        main_layout.addLayout(menu_button_layout)
 
-        # Configurar el diseño principal
         splitter = QSplitter(Qt.Vertical)
         splitter.addWidget(self.editor)
         splitter.addWidget(self.output_panel)
@@ -191,46 +181,44 @@ class IDE(QMainWindow):
             self.tree_window.closeEvent = self.close_new_window  # Asignar evento de cierre'''
 
     def close_new_window(self, event):
-        self.tree_window_opened = False  # Marcar la ventana como cerrada
+        self.tree_window_opened = False
         event.accept()
 
     #       _________________________________
     #______/ Funcionalidad: Nuevo archivo... \______ 
     def new_file(self):
         self.editor.setVisible(True)
-        self.editor.clear()  # Limpiar el editor
-        self.setWindowTitle("Writing Machine IDE - Nuevo Archivo")  # Actualizar el título
-        self.current_file = None  # Reiniciar el archivo actual
-        self.compile_button.setEnabled(False)  # Deshabilitar el botón de compilar
-        self.run_button.setEnabled(False)  # Deshabilitar el botón de nueva ventana al crear un nuevo archivo
+        self.editor.clear()
+        self.setWindowTitle("Writing Machine IDE - Nuevo Archivo")
+        self.current_file = None
+        self.compile_button.setEnabled(False)
+        self.run_button.setEnabled(False)
 
-    #       ___________________________
+    #       _____________________________________________
     #______/ Funcionalidad: Guardar... y Guardar como... \______ 
     def save_file(self):
         if self.current_file:
             try:
                 with open(self.current_file, 'w') as file:
                     file.write(self.editor.toPlainText())
-                self.compile_button.setEnabled(True)  # Habilitar el botón de compilar al guardar
+                self.compile_button.setEnabled(True)
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo guardar el archivo: {e}")
         else:
-            self.save_file_as()  # Si no hay archivo actual, llamar a "guardar como"
+            self.save_file_as()
 
     def save_file_as(self):
         options = QFileDialog.Options()
         file_name, _ = QFileDialog.getSaveFileName(self, "Guardar archivo como", "", "Archivos de código (*.wmce);;Todos los archivos (*)", options=options)
-
         if file_name:
             if not file_name.endswith('.wmce'):
                 file_name += '.wmce'
-
             try:
                 with open(file_name, 'w') as file:
                     file.write(self.editor.toPlainText())
-                self.current_file = file_name  # Actualizar la variable del archivo actual
-                self.setWindowTitle(f"Writing Machine IDE - {file_name}")  # Actualizar el título de la ventana
-                self.compile_button.setEnabled(True)  # Habilitar el botón de compilar al guardar
+                self.current_file = file_name
+                self.setWindowTitle(f"Writing Machine IDE - {file_name}")
+                self.compile_button.setEnabled(True)
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"No se pudo guardar el archivo: {e}")
 
@@ -241,27 +229,41 @@ class IDE(QMainWindow):
         self.editor.setVisible(True)
         options = QFileDialog.Options()
         file_name, _ = QFileDialog.getOpenFileName(self, "Abrir archivo", "", "Archivos de código (*.wmce);;Todos los archivos (*)", options=options)
-
         if file_name:
             with open(file_name, 'r') as file:
                 self.editor.setPlainText(file.read())
-
-            self.setWindowTitle(f"Writing Machine IDE - {file_name}")   # Actualizar el título de la ventana con el nombre del archivo
-            self.current_file = file_name  # Actualizar el archivo actual
-            self.compile_button.setEnabled(True)  # Habilitar el botón de compilar al abrir un archivo
+            self.setWindowTitle(f"Writing Machine IDE - {file_name}")
+            self.current_file = file_name
+            self.compile_button.setEnabled(True)
 
 
     #       ____________________________
     #______/ Funcionalidad: Compilar... \______ 
     def compile_code(self):
+
         self.run_button.setEnabled(True)
         cadena = self.editor.toPlainText()
         self.output_panel.clear()
-        print(cadena)
+
         if cadena != "":
-            lista = analizador_lexico(cadena)
-            analizador_sintactico(cadena)
-        #return lista
+            
+            # Llamada para realizar el análisis léxico
+            errores_lexicos = analizador_lexico(cadena)
+            if errores_lexicos:
+                for item in errores_lexicos:
+                    if isinstance(item, str):
+                        self.output_panel.appendPlainText(f">> Error léxico | {item}")
+                    else:
+                        #print (item)
+                        pass
+
+                # Llamada al analizador sintáctico y mostrar los errores sintácticos
+            errores_sintacticos = analizador_sintactico(cadena)
+            for error in errores_sintacticos:
+                    self.output_panel.appendPlainText(f">> Error sintáctico | {error}.")
+            
+        else:
+            self.output_panel.appendPlainText(">> ADVERTENCIA: Por favor, ingrese el código antes de compilar.")
 
 
 def main():

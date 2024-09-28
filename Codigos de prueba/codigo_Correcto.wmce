@@ -1,0 +1,52 @@
+// Programa ejemplo del Proyecto de Compiladores e Intérpretes 2024
+
+PROC inc_Var()
+[
+    DEF(varLocal1, 8);
+    DEF(varLocal2, 1);
+    ADD(varLocal1);
+    ADD(varLocal2, SUM(1, varLocal1));
+    posPutero(varLocal1, varLocal2);
+];
+END;
+
+
+PROC posPuntero(varX, varY)
+[
+    POS(varX, varY);
+    cuadro(varX, varY);
+];
+END;
+
+
+PROC cuadro(varX, varY)
+[
+    DOWN;
+    CONTINUEDOWN varY;
+    CONTINUERIGHT varX;
+    CONTINUEUP varY;
+    CONTINUELEFT varX;
+    UP;
+
+    resetear(varX, varY);
+];
+END;
+
+
+PROC resetear(varX, varY)
+[
+    PUT(varX, 0);
+    PUT(varY, 0);
+    POSX varX;
+    POSY varY;
+];
+END;
+
+
+MAIN()
+[
+    DEF(varGlobal1, 1);
+    inc_Var();
+    USECOLOR varGlobal1;
+];
+END;
