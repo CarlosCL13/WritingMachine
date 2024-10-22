@@ -1,19 +1,22 @@
+# LIBRERÍAS
 import ply.lex as lex
 
+# GLOBALES
 errores_lexicos = []  # Lista global para almacenar errores léxicos Main
+
 error_inicial = False
+
 error_len = False
 
 
-# Definicion de Tokens
-
+# TOKENS
 tokens = [
     'COMA', 'PUNTOCOMA', 'PARENTESIS_IZQ', 'PARENTESIS_DER', 
     'PARENTESISC_IZQ', 'PARENTESISC_DER', 'ID', 'NUMERO', 'BOOL'    
 ]
 
-# Definicion de palabras reservadas
-                
+
+# RESERVADAS            
 reservadas = {
     'Def':'DEF', 'Put':'PUT' , 'Proc':'PROC', 'Main':'MAIN',
     'Add':'ADD','while':'WHILE','Repeat':'REPEAT',
@@ -26,22 +29,21 @@ reservadas = {
 }
 
 
-# Definicion de movimientos del hardware
-                                                                                
+# MOVIMIENTOS DE HARDWARE                                                                    
 movimientos = {'ContinueUp':'CONTINUEUP', 'ContinueDown':'CONTINUEDOWN', 
                 'ContinueLeft':'CONTINUELEFT', 'ContinueRight':'CONTINUERIGHT', 
                 'UseColor':'USECOLOR', 'Down':'DOWN','Up':'UP',
                 'Beginning':'BEGINNING'
 }
 
+
 reservadas.update(movimientos)
 
 tokens = list(reservadas.values()) + tokens
 
+
+# ASIGNACIÓN DE CARÁCTERES
 t_ignore = ' \t'
-
-# Asignacion de caracteres
-
 t_COMA = r','
 t_PUNTOCOMA = r';'
 t_PARENTESIS_IZQ = r'\('
@@ -49,20 +51,19 @@ t_PARENTESIS_DER = r'\)'
 t_PARENTESISC_IZQ = r'\['
 t_PARENTESISC_DER = r'\]'
 
-# Funciones
+
+# REGLAS
 
 def t_BOOL(t):
     r'TRUE|FALSE'
     try:
-        t.value = t.value
-        """  if t.value == "TRUE":
-            t.value = t.value
+        if t.value == "TRUE":
+            t.value = True
         else:
-            t.value = t.value """
+            t.value = False
     except ValueError:
         print("No es tipo booleano")
     return t
-
 
 def t_ID(t):
     r'CONTINUELEFT|CONTINUERIGHT|CONTINUEDOWN|TO|OR|UP|[a-zA-Z_][a-zA-Z0-9_@]*'
@@ -87,17 +88,14 @@ def t_ID(t):
             return error
     return t
 
-
 def t_newLine(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-
 def t_NUMERO(t):
     r'\d+'
-    t.value = int(t.value)
+    t.value = int(t.value)  # se realiza la conversión a entero, pues sino se obtendría un string
     return t
-
 
 def t_error(t):
     global errores_lexicos
@@ -123,17 +121,20 @@ def t_error(t):
 
     return None
 
-
 def t_COMMENT(t):
     r'\//.*'
     pass
 
 
+# LEXER (Analizador Léxico)
 def analizador_lexico(cadena):
+
     global errores_lexicos
     errores_lexicos = []
+
     lexer = lex.lex()
     lexer.input(cadena)
+    
     tokens_y_errores = []
     while True:
         token = lexer.token()
@@ -144,9 +145,12 @@ def analizador_lexico(cadena):
     return tokens_y_errores
 
 
-'''lexer = lex.lex()
+# PRUEBAS
+# ========================================================================
+"""
+lexer = lex.lex()
 
-cadena = "PROC ADD (4,5) WHILE (GREATER(3,1)) DEF(var1,TRUE) RANDOM() END;"
+cadena = "PROC ADD (4,5) WHILE (GREATER(3,1)) DEF(var1,FALSE) RANDOM() END;"
 
 lexer.input(cadena)
 
@@ -154,4 +158,6 @@ while True:
     tokens = lexer.token()
     if not tokens:
         break
-    print(tokens)'''
+    print(tokens)
+"""
+# ========================================================================
